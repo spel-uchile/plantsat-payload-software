@@ -50,3 +50,10 @@ modules.order
 Module.symvers
 Mkfile.old
 dkms.conf
+
+# Custom and Clion
+.directory
+.idea/
+build/
+cmake-build-debug/
+SUCHAI-Flight-Software/
