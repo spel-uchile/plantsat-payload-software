@@ -4,8 +4,9 @@ project(PlantSat-Payload)
 set(CMAKE_C_STANDARD 99)
 
 set(SOURCE_FILES
-        src/system/taskInit.c
         src/drivers/mcp9808.c
+        src/system/taskInit.c
+        src/system/cmdSensors.c
         SUCHAI-Flight-Software/src/system/main.c
         SUCHAI-Flight-Software/src/drivers/rpi/init.c
         SUCHAI-Flight-Software/src/drivers/rpi/data_storage.c

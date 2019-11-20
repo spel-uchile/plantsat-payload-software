@@ -19,6 +19,9 @@
 #include "osThread.h"
 #include "osQueue.h"
 
+/* Cmd includes */
+#include "cmdSensors.h"
+
 /* Task includes */
 #include "taskConsole.h"
 #if SCH_HK_ENABLED
