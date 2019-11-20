@@ -22,7 +22,7 @@
 
 int mcp9808_init(void)
 {
-    printf("mcp9808 Init");
+    printf("mcp9808 init...\n");
 
     if (read16(MCP9808_REG_MANUF_ID) != 0x0054)
         return 0;
@@ -47,10 +47,10 @@ float mcp9808_read_temp_c(void)
     }
     else
     {
-        printf("Error Sampling Temp");
+        printf("Error Sampling Temp\n");
         return 0;
     }
-    printf("Sampled Temp: %.4f", temp);
+    printf("Sampled Temp: %.4f\n", temp);
 
     return temp;
 }
@@ -71,10 +71,10 @@ float mcp9808_read_temp_f(void)
     }
     else
     {
-        printf("Error Sampling Temp");
+        printf("Error Sampling Temp\n");
         return 0;
     }
-    printf("Sampled Temp: %.4f", temp);
+    printf("Sampled Temp: %.4f\n", temp);
 
     return temp;
 }
@@ -89,14 +89,14 @@ void mcp9808_shutdown_wake(uint8_t sw)
     {
         conf_shutdown = conf_register | MCP9808_REG_CONFIG_SHUTDOWN;
         ec = write16(MCP9808_REG_CONFIG, conf_shutdown);
-        printf("mcp9808 Temp shutdown result: %d", ec);
+        printf("mcp9808 Temp shutdown result: %d\n", ec);
     }
 
     if (sw == 0)
     {
         conf_shutdown = conf_register & ~MCP9808_REG_CONFIG_SHUTDOWN;
         ec = write16(MCP9808_REG_CONFIG, conf_shutdown);
-        printf("mcp9808 Temp wakeup result: %d", ec);
+        printf("mcp9808 Temp wakeup result: %d\n", ec);
     }
 }
 
@@ -122,7 +122,7 @@ int mcp9808_get_resolution(void)
 
 int mcp9808_set_resolution(uint8_t value)
 {
-    printf("Setting mcp9808 Temp Resolution: %d", value);
+    printf("Setting mcp9808 Temp Resolution: %d\n", value);
     int ec = write8(MCP9808_REG_RESOLUTION, value & 0x03);
     return ec ? 1:0;
 }

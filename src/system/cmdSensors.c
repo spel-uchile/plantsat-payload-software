@@ -38,7 +38,9 @@ int mcp_init(char *fmt, char *params, int nparams)
 }
 
 int mcp_read_temp(char *fmt, char *params, int nparams) {
+    mcp9808_wake();
     float temp = mcp9808_read_temp_c();
+    mcp9808_shutdown();
 
     /* TODO: Save temp as telemetry data */
     LOGI(tag, "TEMP: %0.4f", temp)
