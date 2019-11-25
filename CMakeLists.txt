@@ -4,7 +4,9 @@ project(PlantSat-Payload)
 set(CMAKE_C_STANDARD 99)
 
 set(SOURCE_FILES
-        src/drivers/mcp9808.c
+        src/drivers/mcp9808/mcp9808.c
+        src/drivers/bmp388/bmp3.c
+        src/drivers/bmp388/bmp3_interface.c
         src/system/taskInit.c
         src/system/cmdSensors.c
         SUCHAI-Flight-Software/src/system/main.c
@@ -36,7 +38,8 @@ set(SOURCE_FILES
 )
 
 include_directories(
-        src/drivers/include
+        src/drivers/mcp9808/include
+        src/drivers/bmp388/include
         src/system/include
         SUCHAI-Flight-Software/src/system/include/
         SUCHAI-Flight-Software/src/os/include
@@ -49,7 +52,7 @@ link_directories(
         SUCHAI-Flight-Software/src/drivers/rpi/libcsp/lib
 )
 
-link_libraries(-lpthread -lsqlite3 -lpq -lzmq -lcsp)
+link_libraries(-lpthread -lsqlite3 -lpq -lzmq -lcsp -lm)
 
 # Use pthread_setname_np included in <features.h>
 add_definitions(-D_GNU_SOURCE)
