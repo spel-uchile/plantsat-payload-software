@@ -59,3 +59,4 @@ cmake-build-debug/
 SUCHAI-Flight-Software/
 src/drivers/bmp388/build/
 src/drivers/mcp9808/build/
+src/drivers/hdc1010/build/
