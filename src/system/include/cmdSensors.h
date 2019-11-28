@@ -16,6 +16,7 @@
 #include <unistd.h>
 
 #include "mcp9808.h"
+#include "hdc1010.h"
 
 #include "config.h"
 
@@ -23,11 +24,22 @@
 #include "osDelay.h"
 
 #include "repoCommand.h"
+#include "repoDataSensors.h"
 
-void cmd_mcp9808_init(void);
+void cmd_sensors_init(void);
+
+/**
+ * MCP9808 Temperature Sensor
+ */
 int mcp_init(char *fmt, char *params, int nparams);
 int mcp_read_temp(char *fmt, char *params, int nparams);
 int mcp_get_res(char *fmt, char *params, int nparams);
 int mcp_set_res(char *fmt, char *params, int nparams);
+
+/**
+ * HDC1010 Humidity Sensor
+ */
+int hdc_init(char *fmt, char *params, int nparams);
+int hdc_read(char *fmt, char *params, int nparams);
 
 #endif /* _CMD_SENS_H */

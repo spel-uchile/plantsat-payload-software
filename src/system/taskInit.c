@@ -30,7 +30,7 @@ void my_usart_rx(uint8_t * buf, int len, void * pxTaskWoken) {
 void taskInit(void *param)
 {
     /* Initialize subsystem commands */
-    cmd_mcp9808_init();
+    cmd_sensors_init();
 
     /* Initialize system variables */
     LOGD(tag, "Initializing system variables values...")

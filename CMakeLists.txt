@@ -7,6 +7,7 @@ set(SOURCE_FILES
         src/drivers/mcp9808/mcp9808.c
         src/drivers/bmp388/bmp3.c
         src/drivers/bmp388/bmp3_interface.c
+        src/drivers/hdc1010/hdc1010.c
         src/system/taskInit.c
         src/system/cmdSensors.c
         SUCHAI-Flight-Software/src/system/main.c
@@ -40,8 +41,9 @@ set(SOURCE_FILES
 include_directories(
         src/drivers/mcp9808/include
         src/drivers/bmp388/include
+        src/drivers/hdc1010/include
         src/system/include
-        SUCHAI-Flight-Software/src/system/include/
+        SUCHAI-Flight-Software/src/system/include
         SUCHAI-Flight-Software/src/os/include
         SUCHAI-Flight-Software/src/drivers/rpi/include
         SUCHAI-Flight-Software/src/drivers/rpi/libcsp/include

@@ -23,12 +23,16 @@
 
 static const char* tag = "cmdSens";
 
-void cmd_mcp9808_init(void)
+void cmd_sensors_init(void)
 {
+    /* MCP9808 Temperature sensor commands */
     cmd_add("mcp_init", mcp_init, "", 0);
     cmd_add("mcp_get_temp", mcp_read_temp, "", 0);
     cmd_add("mcp_get_res", mcp_get_res, "", 0);
     cmd_add("mcp_set_res", mcp_set_res, "%d", 1);
+
+    cmd_add("hdc_init", hdc_init, "%i", 1);
+    cmd_add("hdc_get", hdc_read, "", 0);
 }
 
 int mcp_init(char *fmt, char *params, int nparams)
@@ -65,4 +69,28 @@ int mcp_set_res(char *fmt, char *params, int nparams) {
     int ec = mcp9808_set_resolution((uint8_t)value);
 
     return ec ? CMD_OK : CMD_FAIL;
+}
+
+/**
+ * HDC1010 Humidity Sensor
+ */
+int hdc_init(char *fmt, char *params, int nparams)
+{
+    int i2c_addr;
+    if(params == NULL || sscanf(params, fmt, &i2c_addr) != nparams)
+        i2c_addr = HDC1000_I2CADDR;
+
+    LOGI(tag, "Init HDC1010 with addr: %#x...", (uint8_t)i2c_addr);
+    int rc = hdc1010_begin((uint8_t)i2c_addr);
+    return rc ? CMD_OK : CMD_FAIL;
+}
+
+int hdc_read(char *fmt, char *params, int nparams)
+{
+    float temp, hum;
+    temp = hdc1010_readTemperature();
+    hum = hdc1010_readHumidity();
+
+    LOGI(tag, "HDC1010:  %.4f °C, %.4f %%.", temp, hum);
+    return CMD_OK;
 }
