@@ -9,6 +9,7 @@ set(SOURCE_FILES
         src/drivers/bmp388/bmp3_interface.c
         src/system/taskInit.c
         src/system/cmdSensors.c
+        src/system/repoDataSchema.c
         SUCHAI-Flight-Software/src/system/main.c
         SUCHAI-Flight-Software/src/drivers/rpi/init.c
         SUCHAI-Flight-Software/src/drivers/rpi/data_storage.c
@@ -27,6 +28,7 @@ set(SOURCE_FILES
         SUCHAI-Flight-Software/src/system/cmdConsole.c
         SUCHAI-Flight-Software/src/system/repoCommand.c
         SUCHAI-Flight-Software/src/system/repoData.c
+        #SUCHAI-Flight-Software/src/system/repoDataSchema.c
         SUCHAI-Flight-Software/src/system/taskDispatcher.c
         SUCHAI-Flight-Software/src/system/taskExecuter.c
         SUCHAI-Flight-Software/src/system/taskCommunications.c
@@ -52,7 +54,9 @@ link_directories(
         SUCHAI-Flight-Software/src/drivers/rpi/libcsp/lib
 )
 
-link_libraries(-lpthread -lsqlite3 -lpq -lzmq -lcsp -lm)
+link_libraries(-lcsp -lzmq -lsqlite3 -lpq -lpthread -lm)
+
+
 
 # Use pthread_setname_np included in <features.h>
 add_definitions(-D_GNU_SOURCE)
