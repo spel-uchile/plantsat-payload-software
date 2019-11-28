@@ -61,4 +61,6 @@ src/drivers/bmp388/build/
 src/drivers/mcp9808/build/
 src/drivers/hdc1010/build/
 src/drivers/veml6070/build/
+src/drivers/apds9250/build/
+
 
