@@ -96,12 +96,18 @@ typedef enum dat_system {
     dat_drp_temp,                 ///< Temperature data index
     dat_drp_ads,                  ///< ADS data index
     dat_drp_eps,                  ///< EPS data index
+    dat_drp_bmp,                  ///< bmp388 data index
+    dat_drp_hdc,                  ///< hdc1010 data index
+    dat_drp_veml,                 ///< veml6070 data index
     dat_drp_lang,                 ///< Langmuir data index
 
     /// Memory: Current send acknowledge data
     dat_drp_ack_temp,                 ///< Temperature data acknowledge
     dat_drp_ack_ads,                  ///< ADS data index acknowledge
     dat_drp_ack_eps,                  ///< EPS data index acknowledge
+    dat_drp_ack_bmp,                  ///< bmp388 data index acknowledge
+    dat_drp_ack_hdc,                  ///< hdc1010 data index acknowledge
+    dat_drp_ack_veml,                 ///< veml6070 data index acknowledge
     dat_drp_ack_lang,                 ///< Langmuir data index acknowledge
 
     /// Add custom status variables here
@@ -171,12 +177,18 @@ typedef struct __attribute__((packed)) dat_status_s {
     uint32_t dat_drp_temp;          ///< Temperature data index
     uint32_t dat_drp_ads;           ///< ADS data index
     uint32_t dat_drp_eps;           ///< EPS data index
+    uint32_t dat_drp_bmp;
+    uint32_t dat_drp_hdc;
+    uint32_t dat_drp_veml;
     uint32_t dat_drp_lang;          ///< Langmuir data index
 
     /// Memory: Current send acknowledge data
     uint32_t dat_drp_ack_temp;      ///< Temperature data acknowledge
     uint32_t dat_drp_ack_ads;       ///< ADS data index acknowledge
     uint32_t dat_drp_ack_eps;       ///< EPS data index acknowledge
+    uint32_t dat_drp_ack_bmp;
+    uint32_t dat_drp_ack_hdc;
+    uint32_t dat_drp_ack_veml;
     uint32_t dat_drp_ack_lang;      ///< Langmuir data index acknowledge
 
     /// Add custom status variables here
@@ -206,6 +218,9 @@ typedef enum payload_id {
     temp_sensors=0,         ///< Temperature sensors
     ads_sensors,            ///< Ads sensors
     eps_sensors,            ///< Eps sensors
+    bmp_sensors,            ///< bmp388 sensors
+    hdc_sensors,            ///< hdc1010 sensors
+    veml_sensors,           ///< veml6070 sensors
     lang_sensors,           ///< Langmuir probe sensors
     //custom_sensor,           ///< Add custom sensors here
     last_sensor             ///< Dummy element, the amount of payload variables
@@ -261,6 +276,32 @@ typedef struct __attribute__((__packed__)) langmuir_data {
     int particles_counter;
 } langmuir_data_t;
 
+/**
+ * Struct for storing data collected by bmp388 sensor.
+ */
+typedef struct __attribute__((__packed__)) bmp_data {
+    int timestamp;
+    float temp;
+    float prs;
+    float alt;
+} bmp_data_t;
+
+/**
+ * Struct for storing data collected by hdc1010 sensor.
+ */
+typedef struct __attribute__((__packed__)) hdc_data {
+    int timestamp;
+    float temp;
+    float hum;
+} hdc_data_t;
+
+/**
+ * Struct for storing data collected by hdc1010 sensor.
+ */
+typedef struct __attribute__((__packed__)) veml_data {
+    int timestamp;
+    int uv;
+} veml_data_t;
 
 /**
  * Data Map Struct for data schema definition.
@@ -273,5 +314,53 @@ extern struct __attribute__((__packed__)) map {
     char data_order[50];
     char var_names[200];
 } data_map[last_sensor];
+
+/** Union for easily casting status variable types */
+typedef union fvalue{
+    float f;
+    int32_t i;
+} fvalue_t;
+
+#define DAT_OBC_OPMODE_NORMAL   (0) ///< Normal operation
+#define DAT_OBC_OPMODE_WARN     (1) ///< Fail safe operation
+#define DAT_OBC_OPMODE_FAIL     (2) ///< Generalized fail operation
+
+/** The repository's name */
+#define DAT_REPO_SYSTEM "dat_system"    ///< Status variables table name
+
+/** Copy a system @var to a status struct @st */
+#define DAT_CPY_SYSTEM_VAR(st, var) st->var = dat_get_system_var(var)
+
+/** Copy a float system @var to a status struct @st */
+#define DAT_CPY_SYSTEM_VAR_F(st, var) {fvalue_t v; v.i = (float)dat_get_system_var(var); st->var = v.f;}
+
+/** Print the name and value of a integer system status variable */
+#define DAT_PRINT_SYSTEM_VAR(st, var) printf("\t%s: %lu\n", #var, (unsigned long)st->var)
+
+/** Print the name and vale of a float system status variable */
+#define DAT_PRINT_SYSTEM_VAR_F(st, var) printf("\t%s: %f\n", #var, st->var)
+
+/**
+ * Copies the status repository's field values to another dat_status_t struct.
+ *
+ * This function can be useful for debugging status fields with @c dat_print_status .
+ *
+ * And for packing the fields prior to sending them using libcsp in @c tm_send_status .
+ *
+ * @see dat_print_status
+ * @see tm_send_status
+ *
+ * @param status dat_status_t *. Pointer to destination structure
+ */
+void dat_status_to_struct(dat_status_t *status);
+
+/**
+ * Print the names and values of a system status struct's fields.
+ *
+ * @seealso dat_status_to_struct
+ *
+ * @param status Pointer to a status variables struct
+ */
+void dat_print_status(dat_status_t *status);
 
 #endif //REPO_DATA_SCHEMA_H
