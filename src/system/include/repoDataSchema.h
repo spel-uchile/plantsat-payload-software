@@ -99,6 +99,7 @@ typedef enum dat_system {
     dat_drp_bmp,                  ///< bmp388 data index
     dat_drp_hdc,                  ///< hdc1010 data index
     dat_drp_veml,                 ///< veml6070 data index
+    dat_drp_apds,                 ///< apds9250 data index
     dat_drp_lang,                 ///< Langmuir data index
 
     /// Memory: Current send acknowledge data
@@ -108,6 +109,7 @@ typedef enum dat_system {
     dat_drp_ack_bmp,                  ///< bmp388 data index acknowledge
     dat_drp_ack_hdc,                  ///< hdc1010 data index acknowledge
     dat_drp_ack_veml,                 ///< veml6070 data index acknowledge
+    dat_drp_ack_apds,                 ///< apds9250 data index acknowledge
     dat_drp_ack_lang,                 ///< Langmuir data index acknowledge
 
     /// Add custom status variables here
@@ -180,6 +182,7 @@ typedef struct __attribute__((packed)) dat_status_s {
     uint32_t dat_drp_bmp;
     uint32_t dat_drp_hdc;
     uint32_t dat_drp_veml;
+    uint32_t dat_drp_apds;
     uint32_t dat_drp_lang;          ///< Langmuir data index
 
     /// Memory: Current send acknowledge data
@@ -189,6 +192,7 @@ typedef struct __attribute__((packed)) dat_status_s {
     uint32_t dat_drp_ack_bmp;
     uint32_t dat_drp_ack_hdc;
     uint32_t dat_drp_ack_veml;
+    uint32_t dat_drp_ack_apds;
     uint32_t dat_drp_ack_lang;      ///< Langmuir data index acknowledge
 
     /// Add custom status variables here
@@ -221,6 +225,7 @@ typedef enum payload_id {
     bmp_sensors,            ///< bmp388 sensors
     hdc_sensors,            ///< hdc1010 sensors
     veml_sensors,           ///< veml6070 sensors
+    apds_sensors,           ///< apds sensors
     lang_sensors,           ///< Langmuir probe sensors
     //custom_sensor,           ///< Add custom sensors here
     last_sensor             ///< Dummy element, the amount of payload variables
@@ -296,12 +301,24 @@ typedef struct __attribute__((__packed__)) hdc_data {
 } hdc_data_t;
 
 /**
- * Struct for storing data collected by hdc1010 sensor.
+ * Struct for storing data collected by veml6070 sensor.
  */
 typedef struct __attribute__((__packed__)) veml_data {
     int timestamp;
     int uv;
 } veml_data_t;
+
+/**
+ * Struct for storing data collected by apds9250 sensor.
+ */
+typedef struct __attribute__((__packed__)) apds_data {
+    int timestamp;
+    int red;
+    int green;
+    int blue;
+    int als;
+    int ir;
+} apds_data_t;
 
 /**
  * Data Map Struct for data schema definition.
