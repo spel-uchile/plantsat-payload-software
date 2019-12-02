@@ -26,13 +26,16 @@ static const char* tag = "cmdSens";
 void cmd_sensors_init(void)
 {
     /* MCP9808 Temperature sensor commands */
-    cmd_add("mcp_init", mcp_init, "", 0);
-    cmd_add("mcp_get_temp", mcp_read_temp, "", 0);
-    cmd_add("mcp_get_res", mcp_get_res, "", 0);
-    cmd_add("mcp_set_res", mcp_set_res, "%d", 1);
+    cmd_add("temp_init", mcp_init, "", 0);
+    cmd_add("temp_get", mcp_read_temp, "", 0);
+    cmd_add("temp_get_res", mcp_get_res, "", 0);
+    cmd_add("temp_set_res", mcp_set_res, "%d", 1);
 
-    cmd_add("hdc_init", hdc_init, "%i", 1);
-    cmd_add("hdc_get", hdc_read, "", 0);
+    cmd_add("hum_init", hdc_init, "%i", 1);
+    cmd_add("hum_get", hdc_read, "", 0);
+
+    cmd_add("uv_init", veml_init, "", 0);
+    cmd_add("uv_get", veml_get, "", 0);
 }
 
 int mcp_init(char *fmt, char *params, int nparams)
@@ -93,4 +96,29 @@ int hdc_read(char *fmt, char *params, int nparams)
 
     LOGI(tag, "HDC1010:  %.4f °C, %.4f %%.", temp, hum);
     return CMD_OK;
+}
+
+/**
+ * VEML6070 UV Sensor
+ */
+int veml_init(char *fmt, char *params, int nparams)
+{
+    LOGI(tag, "Init VEML6070. Int. time: %d", VEML6070_1_T);
+    veml6070_begin(VEML6070_1_T);
+    return CMD_OK;
+}
+
+int veml_get(char *fmt, char *params, int nparams)
+{
+    int32_t uv = veml6070_readUV();
+    if(uv == -1)
+    {
+        LOGE(tag, "Error reading VEML6070");
+        return CMD_FAIL;
+    }
+    else
+    {
+        LOGI(tag, "VEML6070 UV: %d", uv);
+        return CMD_OK;
+    }
 }

@@ -8,6 +8,7 @@ set(SOURCE_FILES
         src/drivers/bmp388/bmp3.c
         src/drivers/bmp388/bmp3_interface.c
         src/drivers/hdc1010/hdc1010.c
+        src/drivers/veml6070/veml6070.c
         src/system/taskInit.c
         src/system/cmdSensors.c
         src/system/repoDataSchema.c
@@ -44,6 +45,7 @@ include_directories(
         src/drivers/mcp9808/include
         src/drivers/bmp388/include
         src/drivers/hdc1010/include
+        src/drivers/veml6070/include
         src/system/include
         SUCHAI-Flight-Software/src/system/include
         SUCHAI-Flight-Software/src/os/include

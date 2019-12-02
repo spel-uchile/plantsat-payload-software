@@ -17,6 +17,7 @@
 
 #include "mcp9808.h"
 #include "hdc1010.h"
+#include "veml6070.h"
 
 #include "config.h"
 
@@ -41,5 +42,11 @@ int mcp_set_res(char *fmt, char *params, int nparams);
  */
 int hdc_init(char *fmt, char *params, int nparams);
 int hdc_read(char *fmt, char *params, int nparams);
+
+/**
+ * VEML6070 UV Sensor
+ */
+int veml_init(char *fmt, char *params, int nparams);
+int veml_get(char *fmt, char *params, int nparams);
 
 #endif /* _CMD_SENS_H */
