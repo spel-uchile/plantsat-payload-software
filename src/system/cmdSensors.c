@@ -35,7 +35,7 @@ void cmd_sensors_init(void)
     cmd_add("uv_init", veml_init, "", 0);
     cmd_add("uv_get", veml_get, "", 0);
 
-    cmd_add("rbg_init", apds_init, "", 0);
+    cmd_add("rgb_init", apds_init, "", 0);
     cmd_add("rgb_get", apds_get, "%d", 1);
 
     cmd_add("pres_init", bmp_init, "", 0);
@@ -160,7 +160,7 @@ int apds_get(char *fmt, char *params, int nparams)
         data.ir = apds9250_getRawIRData();
         LOGI(tag, "Light Sensor ALS: %d, IR: %d", data.als, data.ir);
     }
-    else if (mode == veml_rgs || mode == veml_all)
+    if (mode == veml_rgs || mode == veml_all)
     {
         apds9250_setModeRGB();
         osDelay(500);
