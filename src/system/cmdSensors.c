@@ -36,6 +36,9 @@ void cmd_sensors_init(void)
 
     cmd_add("uv_init", veml_init, "", 0);
     cmd_add("uv_get", veml_get, "", 0);
+
+    cmd_add("rbg_init", apds_init, "", 0);
+    cmd_add("rgb_get", apds_get, "%d", 1);
 }
 
 int mcp_init(char *fmt, char *params, int nparams)
@@ -121,4 +124,43 @@ int veml_get(char *fmt, char *params, int nparams)
         LOGI(tag, "VEML6070 UV: %d", uv);
         return CMD_OK;
     }
+}
+
+/**
+ * APDS9250 Light Sensor
+ */
+int apds_init(char *fmt, char *params, int nparams)
+{
+    int rc = apds9250_begin();
+    return rc ? CMD_OK : CMD_FAIL;
+}
+
+int apds_get(char *fmt, char *params, int nparams)
+{
+    int mode;
+    apds9250_sensor_data_t data;
+
+    if(params == NULL || sscanf(params, fmt, &mode) != nparams)
+        mode = veml_all;
+
+    LOGI(tag, "Reading light sensors channel: %d", mode);
+    if(mode == veml_als || mode == veml_all)
+    {
+        apds9250_setModeALS();
+        osDelay(500);
+        data.als = apds9250_getRawALSData();
+        data.ir = apds9250_getRawIRData();
+        LOGI(tag, "Light Sensor ALS: %d, IR: %d", data.als, data.ir);
+    }
+    else if (mode == veml_rgs || mode == veml_all)
+    {
+        apds9250_setModeRGB();
+        osDelay(500);
+        data.r = apds9250_getRawRedData();
+        data.g = apds9250_getRawGreenData();
+        data.b = apds9250_getRawBlueData();
+        LOGI(tag, "Red, Green, Blue: (%d, %d, %d)", data.r, data.g, data.b);
+    }
+
+    return CMD_OK;
 }

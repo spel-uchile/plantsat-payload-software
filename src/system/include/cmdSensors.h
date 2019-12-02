@@ -18,6 +18,7 @@
 #include "mcp9808.h"
 #include "hdc1010.h"
 #include "veml6070.h"
+#include "apds9250.h"
 
 #include "config.h"
 
@@ -47,5 +48,52 @@ int hdc_read(char *fmt, char *params, int nparams);
  */
 int veml_init(char *fmt, char *params, int nparams);
 int veml_get(char *fmt, char *params, int nparams);
+
+/**
+ * APDS9250 RGB and IR Sensor
+ */
+/**
+ * Light sensor read mode
+ */
+ typedef enum veml_type
+ {
+     veml_als, ///< ALS mode
+     veml_rgs, ///< RGB mode
+     veml_all  ///< ALS and RGB mode
+ } vmel_type_t;
+
+ /**
+  * Light sensor data
+  */
+typedef struct {
+    uint32_t r;
+    uint32_t g;
+    uint32_t b;
+    uint32_t ir;
+    uint32_t als;
+} apds9250_sensor_data_t;
+
+/**
+ * Init light sensor data
+ * @param fmt ""
+ * @param params ""
+ * @param nparams 0
+ * @return CMD_OK or CMD_FAIL
+ */
+int apds_init(char *fmt, char *params, int nparams);
+
+/**
+ * Read light sensor data as ALS, RGB or both.
+ *
+ * @param fmt Parameters format: %d or empty
+ * @param params Number or parameters 1 or 0
+ * @param nparams Parameters as string "0" | "1" | "2" | ""
+ *      0: read mode ALS (ALS and IR)
+ *      1: read mode RGB
+ *      2: read mode ALS and RGB
+ *     "": default to 2, ALS and RGB
+ * @return CMD_OK
+ */
+int apds_get(char *fmt, char *params, int nparams);
 
 #endif /* _CMD_SENS_H */
