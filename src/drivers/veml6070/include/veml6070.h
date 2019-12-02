@@ -46,7 +46,7 @@ typedef enum veml6070_integrationtime {
 void veml6070_begin(veml6070_integrationtime_t itime);
 void veml6070_setInterrupt(int state, int level);
 int veml6070_clearAck();
-uint16_t veml6070_readUV(void);
+int32_t veml6070_readUV(void);
 void veml6070_waitForNext(void);
 void veml6070_sleep(int state);
 

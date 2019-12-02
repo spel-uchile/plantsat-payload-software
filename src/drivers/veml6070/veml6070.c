@@ -86,7 +86,7 @@ int veml6070_clearAck() {
     @return the UV reading as a 16 bit integer
 */
 /**************************************************************************/
-uint16_t veml6070_readUV() {
+int32_t veml6070_readUV() {
     #ifdef VEML6070_DEBUG
         printf("readUV\n");
     #endif
@@ -106,7 +106,7 @@ uint16_t veml6070_readUV() {
     uvi <<= 8;
     uvi |= reg_data2[0];
 
-    return uvi;
+    return (int32_t)uvi;
 }
 
 /**************************************************************************/
