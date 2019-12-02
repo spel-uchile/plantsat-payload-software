@@ -11,6 +11,7 @@ set(SOURCE_FILES
         src/drivers/veml6070/veml6070.c
         src/drivers/apds9250/apds9250.c
         src/system/taskInit.c
+        src/system/taskSensors.c
         src/system/cmdSensors.c
         src/system/repoDataSchema.c
         SUCHAI-Flight-Software/src/system/main.c

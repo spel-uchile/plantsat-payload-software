@@ -24,6 +24,7 @@
 
 /* Task includes */
 #include "taskConsole.h"
+#include "taskSensors.h"
 #if SCH_HK_ENABLED
 #include "taskHousekeeping.h"
 #endif

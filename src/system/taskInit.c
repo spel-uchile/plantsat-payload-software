@@ -54,8 +54,8 @@ void taskInit(void *param)
     t_ok = osCreateTask(taskConsole, "console", SCH_TASK_CON_STACK, NULL, 2, &(thread_id[0]));
     if(t_ok != 0) LOGE(tag, "Task console not created!");
 
-//    t_ok = osCreateTask(taskPlantSat, "plant", SCH_TASK_CON_STACK, NULL, 2, &(thread_id[1]));
-//    if(t_ok != 0) LOGE(tag, "Task plantsat not created!");
+    t_ok = osCreateTask(taskSensors, "sensors", SCH_TASK_HKP_STACK, NULL, 2, &(thread_id[1]));
+    if(t_ok != 0) LOGE(tag, "Task sensors not created!");
 
 #if SCH_HK_ENABLED
     t_ok = osCreateTask(taskHousekeeping, "housekeeping", SCH_TASK_HKP_STACK, NULL, 2, &(thread_id[2]));
