@@ -24,7 +24,6 @@
 #include "osDelay.h"
 
 #include "repoCommand.h"
-#include "repoDataSensors.h"
 
 void cmd_sensors_init(void);
 

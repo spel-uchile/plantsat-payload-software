@@ -16,6 +16,7 @@ struct map data_map[last_sensor] = {
         { "bmp_data",      (uint16_t) (sizeof(bmp_data_t)),      dat_drp_bmp,  dat_drp_ack_bmp,  "%u %f %f %f",                   "timestamp temp prs alt"},
         { "hdc_data",      (uint16_t) (sizeof(hdc_data_t)),      dat_drp_hdc,  dat_drp_ack_hdc,  "%u %f %f",                      "timestamp temp hum"},
         { "veml_data",     (uint16_t) (sizeof(veml_data_t)),     dat_drp_veml, dat_drp_ack_veml, "%u %u",                         "timestamp uv"},
+        { "apds_data",     (uint16_t) (sizeof(apds_data_t)),     dat_drp_apds, dat_drp_ack_apds, "%u %d %d %d %d %d",             "timestamp red green blue als ir"},
         { "langmuir_data", (uint16_t) (sizeof(langmuir_data_t)), dat_drp_lang, dat_drp_ack_lang, "%u %f %f %f %d",                "timestamp sweep_voltage plasma_voltage plasma_temperature particles_counter"}
 };
 
@@ -69,6 +70,7 @@ void dat_status_to_struct(dat_status_t *status)
     DAT_CPY_SYSTEM_VAR(status, dat_drp_bmp);
     DAT_CPY_SYSTEM_VAR(status, dat_drp_hdc);
     DAT_CPY_SYSTEM_VAR(status, dat_drp_veml);
+    DAT_CPY_SYSTEM_VAR(status, dat_drp_apds);
     DAT_CPY_SYSTEM_VAR(status, dat_drp_lang);
 
     DAT_CPY_SYSTEM_VAR(status, dat_drp_ack_temp);
@@ -77,6 +79,7 @@ void dat_status_to_struct(dat_status_t *status)
     DAT_CPY_SYSTEM_VAR(status, dat_drp_ack_bmp);
     DAT_CPY_SYSTEM_VAR(status, dat_drp_ack_hdc);
     DAT_CPY_SYSTEM_VAR(status, dat_drp_ack_veml);
+    DAT_CPY_SYSTEM_VAR(status, dat_drp_ack_apds);
     DAT_CPY_SYSTEM_VAR(status, dat_drp_ack_lang);
 }
 
@@ -128,6 +131,7 @@ void dat_print_status(dat_status_t *status)
     DAT_PRINT_SYSTEM_VAR(status, dat_drp_bmp);
     DAT_PRINT_SYSTEM_VAR(status, dat_drp_hdc);
     DAT_PRINT_SYSTEM_VAR(status, dat_drp_veml);
+    DAT_PRINT_SYSTEM_VAR(status, dat_drp_apds);
     DAT_PRINT_SYSTEM_VAR(status, dat_drp_lang);
 
     DAT_PRINT_SYSTEM_VAR(status, dat_drp_ack_temp);
@@ -136,6 +140,7 @@ void dat_print_status(dat_status_t *status)
     DAT_PRINT_SYSTEM_VAR(status, dat_drp_ack_bmp);
     DAT_PRINT_SYSTEM_VAR(status, dat_drp_ack_hdc);
     DAT_PRINT_SYSTEM_VAR(status, dat_drp_ack_veml);
+    DAT_PRINT_SYSTEM_VAR(status, dat_drp_ack_apds);
     DAT_PRINT_SYSTEM_VAR(status, dat_drp_ack_lang);
 }
 
