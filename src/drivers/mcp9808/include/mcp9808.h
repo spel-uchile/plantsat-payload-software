@@ -35,6 +35,17 @@
 #define MCP9808_REG_DEVICE_ID 0x07    ///< device ID
 #define MCP9808_REG_RESOLUTION 0x08   ///< resolutin
 
+/**
+ *  Mode Resolution SampleTime
+ */
+typedef enum mcp9808_res
+{
+    mcp9808_res_05, ///<   0    0.5°C       30 ms
+    mcp9808_res_025, ///<  1    0.25°C      65 ms
+    mcp9808_res_0125, ///< 2    0.125°C     130 ms
+    mcp9808_res_00625 ///< 3    0.0625°C    250 ms (default)
+} mcp9808_res_t;
+
 /*!
  *   @brief  Initializes sensors
  *   @return 1 OK, 0 error.

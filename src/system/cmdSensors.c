@@ -28,8 +28,6 @@ void cmd_sensors_init(void)
     /* MCP9808 Temperature sensor commands */
     cmd_add("temp_init", mcp_init, "", 0);
     cmd_add("temp_get", mcp_read_temp, "", 0);
-    cmd_add("temp_get_res", mcp_get_res, "", 0);
-    cmd_add("temp_set_res", mcp_set_res, "%d", 1);
 
     cmd_add("hum_init", hdc_init, "%i", 1);
     cmd_add("hum_get", hdc_read, "", 0);
@@ -47,7 +45,14 @@ void cmd_sensors_init(void)
 int mcp_init(char *fmt, char *params, int nparams)
 {
     int rc = mcp9808_init();
-    return rc ? CMD_OK : CMD_FAIL;
+    if(!rc)
+        return CMD_FAIL;
+
+    rc = mcp9808_set_resolution(mcp9808_res_00625);
+    if(!rc)
+        return CMD_FAIL;
+
+    return CMD_OK;
 }
 
 int mcp_read_temp(char *fmt, char *params, int nparams) {
