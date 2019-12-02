@@ -671,12 +671,12 @@ struct bmp3_calib_data {
  * @brief bmp3 sensor structure which comprises of temperature and pressure
  * data.
  */
-struct bmp3_data {
+typedef struct bmp3_data {
     /*! Compensated temperature */
     double temperature;
     /*! Compensated pressure */
     double pressure;
-};
+} bmp3_data_t;
 
 #else
 /*!

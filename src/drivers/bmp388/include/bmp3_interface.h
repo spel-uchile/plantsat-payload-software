@@ -44,6 +44,7 @@ int bmp3_begin(uint8_t addr);
 float bmp3_readTemperature(void);
 float bmp3_readPressure(void);
 float bmp3_readAltitude(float seaLevel);
+double bmp3_readAltitude2(bmp3_data_t *data);
 
 int bmp3_setTemperatureOversampling(uint8_t os);
 int bmp3_setPressureOversampling(uint8_t os);
@@ -52,6 +53,7 @@ int bmp3_setOutputDataRate(uint8_t odr);
 
 /// Perform a reading in blocking mode
 int bmp3_performReading(void);
+int bmp3_performReading2(bmp3_data_t *data);
 
 /// Temperature (Celsius) assigned after calling performReading()
 double bmp3_temperature;

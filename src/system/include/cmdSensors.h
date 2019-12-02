@@ -19,6 +19,7 @@
 #include "hdc1010.h"
 #include "veml6070.h"
 #include "apds9250.h"
+#include "bmp3_interface.h"
 
 #include "config.h"
 
@@ -95,5 +96,11 @@ int apds_init(char *fmt, char *params, int nparams);
  * @return CMD_OK
  */
 int apds_get(char *fmt, char *params, int nparams);
+
+/**
+ * BMP388 Pressure Sensor
+ */
+int bmp_init(char *fmt, char *params, int nparams);
+int bmp_get(char *fmt, char *params, int nparams);
 
 #endif /* _CMD_SENS_H */

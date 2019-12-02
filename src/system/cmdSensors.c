@@ -39,6 +39,9 @@ void cmd_sensors_init(void)
 
     cmd_add("rbg_init", apds_init, "", 0);
     cmd_add("rgb_get", apds_get, "%d", 1);
+
+    cmd_add("pres_init", bmp_init, "", 0);
+    cmd_add("pres_get", bmp_get, "", 0);
 }
 
 int mcp_init(char *fmt, char *params, int nparams)
@@ -163,4 +166,36 @@ int apds_get(char *fmt, char *params, int nparams)
     }
 
     return CMD_OK;
+}
+
+/**
+ * BMP388 Pressure Sensor
+ */
+int bmp_init(char *fmt, char *params, int nparams)
+{
+    int rc = bmp3_begin(0x76);
+    if(!rc)
+        return CMD_FAIL;
+
+    bmp3_setTemperatureOversampling(BMP3_OVERSAMPLING_8X);
+    bmp3_setPressureOversampling(BMP3_OVERSAMPLING_4X);
+    bmp3_setIIRFilterCoeff(BMP3_IIR_FILTER_COEFF_3);
+    //bmp3_setOutputDataRate(BMP3_ODR_50_HZ);
+
+    return CMD_OK;
+}
+
+int bmp_get(char *fmt, char *params, int nparams)
+{
+    bmp3_data_t data;
+    double alt;
+
+    int rc = bmp3_performReading2(&data);
+    if(rc)
+    {
+        alt = bmp3_readAltitude2(&data);
+        LOGI(tag, "T°: %f °C, Press: %f hPa, Alt: %f m.", data.temperature, data.pressure, alt)
+    }
+    else
+        return CMD_FAIL;
 }

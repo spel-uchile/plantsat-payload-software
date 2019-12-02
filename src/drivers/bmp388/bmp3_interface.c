@@ -157,6 +157,13 @@ float bmp3_readAltitude(float seaLevel)
     return 44330.0 * (1.0 - pow(atmospheric / seaLevel, 0.1903));
 }
 
+double bmp3_readAltitude2(bmp3_data_t *data)
+{
+    double sea_level = 1013.25;
+    double atmospheric = data->pressure / 100.0F;
+    return 44330.0 * (1.0 - pow(atmospheric / sea_level, 0.1903));
+}
+
 /**************************************************************************/
 /*!
     @brief Performs a full reading of all sensors in the BMP3XX.
@@ -167,6 +174,13 @@ float bmp3_readAltitude(float seaLevel)
 */
 /**************************************************************************/
 int bmp3_performReading(void) {
+
+    /* Variable used to store the compensated data */
+    bmp3_data_t data;
+    bmp3_performReading2(&data);
+}
+
+int bmp3_performReading2(bmp3_data_t *data) {
     int8_t rslt;
     /* Used to select the settings user needs to change */
     uint16_t settings_sel = 0;
@@ -216,20 +230,18 @@ int bmp3_performReading(void) {
     if (rslt != BMP3_OK)
         return 0;
 
-    /* Variable used to store the compensated data */
-    struct bmp3_data data;
-
     /* Temperature and Pressure data are read and stored in the bmp3_data instance */
-    rslt = bmp3_get_sensor_data(sensor_comp, &data, &the_sensor);
+    rslt = bmp3_get_sensor_data(sensor_comp, data, &the_sensor);
 
     /* Save the temperature and pressure data */
-    bmp3_temperature = data.temperature;
-    bmp3_pressure = data.pressure;
+    bmp3_temperature = data->temperature;
+    bmp3_pressure = data->pressure;
     if (rslt != BMP3_OK)
         return 0;
 
     return 1;
 }
+
 
 
 /**************************************************************************/
