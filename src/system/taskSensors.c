@@ -32,11 +32,11 @@ void taskSensors(void *param)
     char *init_cmds[] = {"temp_init", "hum_init", "uv_init", "rgb_init", "pres_init"};
     char *get_cmds[] = {"temp_get", "hum_get", "uv_get", "rgb_get", "pres_get"};
 
-    sample_machine_t machine = {ST_SAMPLING, ACT_STAND_BY, last_sensor, 5, -1};
-//    if(osSemaphoreCreate(&sample_machine_sem) != CSP_SEMAPHORE_OK)
-//    {
-//        LOGE(tag, "Unable to create system status repository mutex");
-//    }
+    machine = (sample_machine_t) {ST_SAMPLING, ACT_STAND_BY, last_sensor, 5, -1};
+    if(osSemaphoreCreate(&sample_machine_sem) != CSP_SEMAPHORE_OK)
+    {
+        LOGE(tag, "Unable to create system status repository mutex");
+    }
 
     for(i=0; i<5; i++)
     {
@@ -49,13 +49,15 @@ void taskSensors(void *param)
     while(1)
     {
         osTaskDelayUntil(&xLastWakeTime, 1000); //Suspend task
-//        LOGI(tag, "Sample Machine Action: %d", elapsed_sec);
+        osSemaphoreTake(&sample_machine_sem, portMAX_DELAY);
         // Apply action
         if (machine.action != ACT_STAND_BY) {
-            if (machine.action != ACT_START) {
+            if (machine.action == ACT_START) {
                 machine.state = ST_SAMPLING;
-            } else if (machine.action != ACT_PAUSE) {
+                machine.action = ACT_STAND_BY;
+            } else if (machine.action == ACT_PAUSE) {
                 machine.state = ST_PAUSE;
+                machine.action = ACT_STAND_BY;
             }
         }
 
@@ -63,9 +65,11 @@ void taskSensors(void *param)
             // Check for samples left
             if (machine.samples_left == 0) {
                 machine.state = ST_PAUSE;
+                machine.action = ACT_STAND_BY;
             }
             // Check for step
             else if (elapsed_sec % machine.step == 0) {
+                LOGI(tag, "Sample Machine Action: %d", elapsed_sec);
                 for(i=0; i<5; i++) {
                     cmd_get = cmd_get_str(get_cmds[i]);
                     cmd_send(cmd_get);
@@ -75,6 +79,22 @@ void taskSensors(void *param)
                 }
             }
         }
+        osSemaphoreGiven(&sample_machine_sem);
         elapsed_sec += 1;
+        // TODO: Store in system variables machine state
     }
+}
+
+int set_machine_state(machine_action_t action, unsigned int step, int nsamples)
+{
+    LOGI(tag, "Changing state to  %d %u %d", action, step, nsamples);
+    if (action >= 0 && action < ACT_LAST && step > 0 && nsamples > -2) {
+        osSemaphoreTake(&sample_machine_sem, portMAX_DELAY);
+        machine.action = action;
+        machine.step = step;
+        machine.samples_left = nsamples;
+        osSemaphoreGiven(&sample_machine_sem);
+        return 1;
+    }
+    return 0;
 }

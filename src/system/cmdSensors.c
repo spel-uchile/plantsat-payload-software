@@ -40,6 +40,21 @@ void cmd_sensors_init(void)
 
     cmd_add("pres_init", bmp_init, "", 0);
     cmd_add("pres_get", bmp_get, "", 0);
+
+    cmd_add("set_state", set_state, "%u %u %d", 3);
+}
+
+int set_state(char *fmt, char *params, int nparams)
+{
+    if(params == NULL)
+        return CMD_ERROR;
+
+    unsigned int action;
+    unsigned int step;
+    int nsamples;
+    if(nparams == sscanf(params, fmt, &action, &step, &nsamples)){
+        return set_machine_state(action, step, nsamples);
+    }
 }
 
 int mcp_init(char *fmt, char *params, int nparams)
