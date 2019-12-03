@@ -40,6 +40,21 @@ void cmd_sensors_init(void)
 
     cmd_add("pres_init", bmp_init, "", 0);
     cmd_add("pres_get", bmp_get, "", 0);
+
+    cmd_add("set_state", set_state, "%u %u %d", 3);
+}
+
+int set_state(char *fmt, char *params, int nparams)
+{
+    if(params == NULL)
+        return CMD_ERROR;
+
+    unsigned int action;
+    unsigned int step;
+    int nsamples;
+    if(nparams == sscanf(params, fmt, &action, &step, &nsamples)){
+        return set_machine_state(action, step, nsamples);
+    }
 }
 
 int mcp_init(char *fmt, char *params, int nparams)
@@ -56,14 +71,20 @@ int mcp_init(char *fmt, char *params, int nparams)
 }
 
 int mcp_read_temp(char *fmt, char *params, int nparams) {
+    mcp_data_t data;
+    data.timestamp = (uint32_t)time(NULL);
+#ifdef X86
+    data.temp = (float) data.timestamp;
+#else
     mcp9808_wake();
-    float temp = mcp9808_read_temp_c();
+    data.temp = mcp9808_read_temp_c();
     mcp9808_shutdown();
+#endif
 
-    /* TODO: Save temp as telemetry data */
-    LOGI(tag, "TEMP: %0.4f", temp)
+    LOGI(tag, "TEMP: %0.4f", data.temp)
+    dat_add_payload_sample(&data, mcp_sensors);
 
-    return temp != 0 ? CMD_OK : CMD_FAIL;
+    return data.temp != 0 ? CMD_OK : CMD_FAIL;
 }
 
 int mcp_get_res(char *fmt, char *params, int nparams) {
@@ -102,10 +123,17 @@ int hdc_init(char *fmt, char *params, int nparams)
 int hdc_read(char *fmt, char *params, int nparams)
 {
     float temp, hum;
+#ifdef X86
+    temp = (float) time(NULL);
+    hum = ((float) time(NULL)) + 1.0;
+#else
     temp = hdc1010_readTemperature();
     hum = hdc1010_readHumidity();
-
+#endif
     LOGI(tag, "HDC1010:  %.4f °C, %.4f %%.", temp, hum);
+    hdc_data_t data = {(uint32_t)time(NULL), temp, hum};
+    dat_add_payload_sample(&data, hdc_sensors);
+
     return CMD_OK;
 }
 
@@ -121,7 +149,11 @@ int veml_init(char *fmt, char *params, int nparams)
 
 int veml_get(char *fmt, char *params, int nparams)
 {
+#ifdef X86
+    int32_t uv = (int32_t) time(NULL);
+#else
     int32_t uv = veml6070_readUV();
+#endif
     if(uv == -1)
     {
         LOGE(tag, "Error reading VEML6070");
@@ -130,6 +162,8 @@ int veml_get(char *fmt, char *params, int nparams)
     else
     {
         LOGI(tag, "VEML6070 UV: %d", uv);
+        veml_data_t data = {(uint32_t)time(NULL), uv};
+        dat_add_payload_sample(&data, veml_sensors);
         return CMD_OK;
     }
 }
@@ -146,7 +180,8 @@ int apds_init(char *fmt, char *params, int nparams)
 int apds_get(char *fmt, char *params, int nparams)
 {
     int mode;
-    apds9250_sensor_data_t data;
+    apds_data_t data;
+    data.timestamp = (uint32_t)time(NULL);
 
     if(params == NULL || sscanf(params, fmt, &mode) != nparams)
         mode = veml_all;
@@ -154,22 +189,34 @@ int apds_get(char *fmt, char *params, int nparams)
     LOGI(tag, "Reading light sensors channel: %d", mode);
     if(mode == veml_als || mode == veml_all)
     {
+#ifdef X86
+        data.als = 50;
+        data.ir = 51;
+#else
         apds9250_setModeALS();
         osDelay(500);
         data.als = apds9250_getRawALSData();
         data.ir = apds9250_getRawIRData();
+#endif
         LOGI(tag, "Light Sensor ALS: %d, IR: %d", data.als, data.ir);
     }
     if (mode == veml_rgs || mode == veml_all)
     {
+#ifdef X86
+        data.red = 31;
+        data.green = 32;
+        data.blue = 33;
+#else
         apds9250_setModeRGB();
         osDelay(500);
-        data.r = apds9250_getRawRedData();
-        data.g = apds9250_getRawGreenData();
-        data.b = apds9250_getRawBlueData();
-        LOGI(tag, "Red, Green, Blue: (%d, %d, %d)", data.r, data.g, data.b);
+        data.red = apds9250_getRawRedData();
+        data.green = apds9250_getRawGreenData();
+        data.blue = apds9250_getRawBlueData();
+#endif
+        LOGI(tag, "Red, Green, Blue: (%d, %d, %d)", data.red, data.green, data.blue);
     }
 
+    dat_add_payload_sample(&data, apds_sensors);
     return CMD_OK;
 }
 
@@ -195,11 +242,25 @@ int bmp_get(char *fmt, char *params, int nparams)
     bmp3_data_t data;
     double alt;
 
+#ifdef X86
+    int rc = 1;
+    data.temperature = 5.0;
+    data.pressure = 6.0;
+#else
     int rc = bmp3_performReading2(&data);
+#endif
     if(rc)
     {
+#ifdef X86
+        alt = 3.0;
+#else
         alt = bmp3_readAltitude2(&data);
+#endif
         LOGI(tag, "T°: %f °C, Press: %f hPa, Alt: %f m.", data.temperature, data.pressure, alt)
+        bmp_data_t bdata = {(uint32_t)time(NULL), (float)data.temperature,
+                            (float)data.pressure, (float)alt};
+        dat_add_payload_sample(&bdata, bmp_sensors);
+        return CMD_OK;
     }
     else
         return CMD_FAIL;

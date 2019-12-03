@@ -27,9 +27,12 @@
 #include "osDelay.h"
 
 #include "repoCommand.h"
+#include "taskSensors.h"
+
 
 void cmd_sensors_init(void);
 
+int set_state(char *fmt, char *params, int nparams);
 /**
  * MCP9808 Temperature Sensor
  */

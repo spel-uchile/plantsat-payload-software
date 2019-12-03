@@ -47,7 +47,7 @@ void taskInit(void *param)
 
     LOGD(tag, "Creating client tasks ...");
     int t_ok;
-    int n_threads = 5;
+    int n_threads = 6;
     os_thread thread_id[n_threads];
 
     /* Creating clients tasks */
