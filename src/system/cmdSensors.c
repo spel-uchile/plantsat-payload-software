@@ -56,14 +56,17 @@ int mcp_init(char *fmt, char *params, int nparams)
 }
 
 int mcp_read_temp(char *fmt, char *params, int nparams) {
+    mcp_data_t data;
+    data.timestamp = (uint32_t)time(NULL);
+
     mcp9808_wake();
-    float temp = mcp9808_read_temp_c();
+    data.temp = mcp9808_read_temp_c();
     mcp9808_shutdown();
 
-    /* TODO: Save temp as telemetry data */
-    LOGI(tag, "TEMP: %0.4f", temp)
+    LOGI(tag, "TEMP: %0.4f", data.temp)
+    dat_add_payload_sample(&data, mcp_sensors);
 
-    return temp != 0 ? CMD_OK : CMD_FAIL;
+    return data.temp != 0 ? CMD_OK : CMD_FAIL;
 }
 
 int mcp_get_res(char *fmt, char *params, int nparams) {
@@ -106,6 +109,9 @@ int hdc_read(char *fmt, char *params, int nparams)
     hum = hdc1010_readHumidity();
 
     LOGI(tag, "HDC1010:  %.4f °C, %.4f %%.", temp, hum);
+    hdc_data_t data = {(uint32_t)time(NULL), temp, hum};
+    dat_add_payload_sample(&data, hdc_sensors);
+
     return CMD_OK;
 }
 
@@ -130,6 +136,8 @@ int veml_get(char *fmt, char *params, int nparams)
     else
     {
         LOGI(tag, "VEML6070 UV: %d", uv);
+        veml_data_t data = {(uint32_t)time(NULL), uv};
+        dat_add_payload_sample(&data, veml_sensors);
         return CMD_OK;
     }
 }
@@ -146,7 +154,8 @@ int apds_init(char *fmt, char *params, int nparams)
 int apds_get(char *fmt, char *params, int nparams)
 {
     int mode;
-    apds9250_sensor_data_t data;
+    apds_data_t data;
+    data.timestamp = (uint32_t)time(NULL);
 
     if(params == NULL || sscanf(params, fmt, &mode) != nparams)
         mode = veml_all;
@@ -164,12 +173,13 @@ int apds_get(char *fmt, char *params, int nparams)
     {
         apds9250_setModeRGB();
         osDelay(500);
-        data.r = apds9250_getRawRedData();
-        data.g = apds9250_getRawGreenData();
-        data.b = apds9250_getRawBlueData();
-        LOGI(tag, "Red, Green, Blue: (%d, %d, %d)", data.r, data.g, data.b);
+        data.red = apds9250_getRawRedData();
+        data.green = apds9250_getRawGreenData();
+        data.blue = apds9250_getRawBlueData();
+        LOGI(tag, "Red, Green, Blue: (%d, %d, %d)", data.red, data.green, data.blue);
     }
 
+    dat_add_payload_sample(&data, apds_sensors);
     return CMD_OK;
 }
 
@@ -200,6 +210,10 @@ int bmp_get(char *fmt, char *params, int nparams)
     {
         alt = bmp3_readAltitude2(&data);
         LOGI(tag, "T°: %f °C, Press: %f hPa, Alt: %f m.", data.temperature, data.pressure, alt)
+        bmp_data_t bdata = {(uint32_t)time(NULL), (float)data.temperature,
+                            (float)data.pressure, (float)alt};
+        dat_add_payload_sample(&bdata, bmp_sensors);
+        return CMD_OK;
     }
     else
         return CMD_FAIL;

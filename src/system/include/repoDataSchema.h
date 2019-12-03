@@ -96,6 +96,7 @@ typedef enum dat_system {
     dat_drp_temp,                 ///< Temperature data index
     dat_drp_ads,                  ///< ADS data index
     dat_drp_eps,                  ///< EPS data index
+    dat_drp_mcp,                  ///< mcp9808 data index
     dat_drp_bmp,                  ///< bmp388 data index
     dat_drp_hdc,                  ///< hdc1010 data index
     dat_drp_veml,                 ///< veml6070 data index
@@ -106,6 +107,7 @@ typedef enum dat_system {
     dat_drp_ack_temp,                 ///< Temperature data acknowledge
     dat_drp_ack_ads,                  ///< ADS data index acknowledge
     dat_drp_ack_eps,                  ///< EPS data index acknowledge
+    dat_drp_ack_mcp,                  ///< EPS data index acknowledge
     dat_drp_ack_bmp,                  ///< bmp388 data index acknowledge
     dat_drp_ack_hdc,                  ///< hdc1010 data index acknowledge
     dat_drp_ack_veml,                 ///< veml6070 data index acknowledge
@@ -179,6 +181,7 @@ typedef struct __attribute__((packed)) dat_status_s {
     uint32_t dat_drp_temp;          ///< Temperature data index
     uint32_t dat_drp_ads;           ///< ADS data index
     uint32_t dat_drp_eps;           ///< EPS data index
+    uint32_t dat_drp_mcp;
     uint32_t dat_drp_bmp;
     uint32_t dat_drp_hdc;
     uint32_t dat_drp_veml;
@@ -189,6 +192,7 @@ typedef struct __attribute__((packed)) dat_status_s {
     uint32_t dat_drp_ack_temp;      ///< Temperature data acknowledge
     uint32_t dat_drp_ack_ads;       ///< ADS data index acknowledge
     uint32_t dat_drp_ack_eps;       ///< EPS data index acknowledge
+    uint32_t dat_drp_ack_mcp;
     uint32_t dat_drp_ack_bmp;
     uint32_t dat_drp_ack_hdc;
     uint32_t dat_drp_ack_veml;
@@ -222,6 +226,7 @@ typedef enum payload_id {
     temp_sensors=0,         ///< Temperature sensors
     ads_sensors,            ///< Ads sensors
     eps_sensors,            ///< Eps sensors
+    mcp_sensors,            ///< Eps sensors
     bmp_sensors,            ///< bmp388 sensors
     hdc_sensors,            ///< hdc1010 sensors
     veml_sensors,           ///< veml6070 sensors
@@ -235,7 +240,7 @@ typedef enum payload_id {
  * Struct for storing temperature data.
  */
 typedef struct __attribute__((__packed__)) temp_data {
-    int timestamp;
+    uint32_t timestamp;
     float obc_temp_1;
     float obc_temp_2;
     float obc_temp_3;
@@ -245,7 +250,7 @@ typedef struct __attribute__((__packed__)) temp_data {
  * Struct for storing data collected by ads sensors.
  */
 typedef struct __attribute__((__packed__)) ads_data {
-    int timestamp;
+    uint32_t timestamp;
     float acc_x;            ///< Gyroscope acceleration value along the x axis
     float acc_y;            ///< Gyroscope acceleration value along the y axis
     float acc_z;            ///< Gyroscope acceleration value along the z axis
@@ -258,7 +263,7 @@ typedef struct __attribute__((__packed__)) ads_data {
  * Struct for storing data collected by eps housekeeping.
  */
 typedef struct __attribute__((__packed__)) eps_data {
-    int timestamp;
+    uint32_t timestamp;
     uint32_t cursun;            ///< Current from boost converters [mA]
     uint32_t cursys;            ///< Current out of battery [mA]
     uint32_t vbatt;            ///< Voltage of battery [mV]
@@ -274,28 +279,36 @@ typedef struct __attribute__((__packed__)) eps_data {
  * Struct for storing data collected by langmuir probe payload.
  */
 typedef struct __attribute__((__packed__)) langmuir_data {
-    int timestamp;
+    uint32_t timestamp;
     float sweep_voltage;
     float plasma_voltage;
     float plasma_temperature;
-    int particles_counter;
+    int32_t particles_counter;
 } langmuir_data_t;
 
 /**
  * Struct for storing data collected by bmp388 sensor.
  */
 typedef struct __attribute__((__packed__)) bmp_data {
-    int timestamp;
+    uint32_t timestamp;
     float temp;
     float prs;
     float alt;
 } bmp_data_t;
 
 /**
+ * Struct for storing data collected by mcp9808 sensor.
+ */
+typedef struct __attribute__((__packed__)) mcp_data {
+    uint32_t timestamp;
+    float temp;
+} mcp_data_t;
+
+/**
  * Struct for storing data collected by hdc1010 sensor.
  */
 typedef struct __attribute__((__packed__)) hdc_data {
-    int timestamp;
+    uint32_t timestamp;
     float temp;
     float hum;
 } hdc_data_t;
@@ -304,20 +317,20 @@ typedef struct __attribute__((__packed__)) hdc_data {
  * Struct for storing data collected by veml6070 sensor.
  */
 typedef struct __attribute__((__packed__)) veml_data {
-    int timestamp;
-    int uv;
+    uint32_t timestamp;
+    int32_t uv;
 } veml_data_t;
 
 /**
  * Struct for storing data collected by apds9250 sensor.
  */
 typedef struct __attribute__((__packed__)) apds_data {
-    int timestamp;
-    int red;
-    int green;
-    int blue;
-    int als;
-    int ir;
+    uint32_t timestamp;
+    int32_t red;
+    int32_t green;
+    int32_t blue;
+    int32_t als;
+    int32_t ir;
 } apds_data_t;
 
 /**

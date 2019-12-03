@@ -13,6 +13,7 @@ struct map data_map[last_sensor] = {
         {"temp_data",      (uint16_t) (sizeof(temp_data_t)),     dat_drp_temp, dat_drp_ack_temp, "%u %f %f %f",                   "timestamp obc_temp_1 obc_temp_2 obc_temp_3"},
         { "ads_data",      (uint16_t) (sizeof(ads_data_t)),      dat_drp_ads,  dat_drp_ack_ads,  "%u %f %f %f %f %f %f",          "timestamp acc_x acc_y acc_z mag_x mag_y mag_z"},
         { "eps_data",      (uint16_t) (sizeof(eps_data_t)),      dat_drp_eps,  dat_drp_ack_eps,  "%u %u %u %u %d %d %d %d %d %d", "timestamp cursun cursys vbatt temp1 temp2 temp3 temp4 temp5 temp6"},
+        { "mcp_data",      (uint16_t) (sizeof(mcp_data_t)),      dat_drp_mcp,  dat_drp_ack_mcp,  "%u %f",                         "timestamp temp"},
         { "bmp_data",      (uint16_t) (sizeof(bmp_data_t)),      dat_drp_bmp,  dat_drp_ack_bmp,  "%u %f %f %f",                   "timestamp temp prs alt"},
         { "hdc_data",      (uint16_t) (sizeof(hdc_data_t)),      dat_drp_hdc,  dat_drp_ack_hdc,  "%u %f %f",                      "timestamp temp hum"},
         { "veml_data",     (uint16_t) (sizeof(veml_data_t)),     dat_drp_veml, dat_drp_ack_veml, "%u %u",                         "timestamp uv"},
@@ -67,6 +68,7 @@ void dat_status_to_struct(dat_status_t *status)
     DAT_CPY_SYSTEM_VAR(status, dat_drp_temp);
     DAT_CPY_SYSTEM_VAR(status, dat_drp_ads);
     DAT_CPY_SYSTEM_VAR(status, dat_drp_eps);
+    DAT_CPY_SYSTEM_VAR(status, dat_drp_mcp);
     DAT_CPY_SYSTEM_VAR(status, dat_drp_bmp);
     DAT_CPY_SYSTEM_VAR(status, dat_drp_hdc);
     DAT_CPY_SYSTEM_VAR(status, dat_drp_veml);
@@ -76,6 +78,7 @@ void dat_status_to_struct(dat_status_t *status)
     DAT_CPY_SYSTEM_VAR(status, dat_drp_ack_temp);
     DAT_CPY_SYSTEM_VAR(status, dat_drp_ack_ads);
     DAT_CPY_SYSTEM_VAR(status, dat_drp_ack_eps);
+    DAT_CPY_SYSTEM_VAR(status, dat_drp_ack_mcp);
     DAT_CPY_SYSTEM_VAR(status, dat_drp_ack_bmp);
     DAT_CPY_SYSTEM_VAR(status, dat_drp_ack_hdc);
     DAT_CPY_SYSTEM_VAR(status, dat_drp_ack_veml);
@@ -128,6 +131,7 @@ void dat_print_status(dat_status_t *status)
     DAT_PRINT_SYSTEM_VAR(status, dat_drp_temp);
     DAT_PRINT_SYSTEM_VAR(status, dat_drp_ads);
     DAT_PRINT_SYSTEM_VAR(status, dat_drp_eps);
+    DAT_PRINT_SYSTEM_VAR(status, dat_drp_mcp);
     DAT_PRINT_SYSTEM_VAR(status, dat_drp_bmp);
     DAT_PRINT_SYSTEM_VAR(status, dat_drp_hdc);
     DAT_PRINT_SYSTEM_VAR(status, dat_drp_veml);
@@ -137,6 +141,7 @@ void dat_print_status(dat_status_t *status)
     DAT_PRINT_SYSTEM_VAR(status, dat_drp_ack_temp);
     DAT_PRINT_SYSTEM_VAR(status, dat_drp_ack_ads);
     DAT_PRINT_SYSTEM_VAR(status, dat_drp_ack_eps);
+    DAT_PRINT_SYSTEM_VAR(status, dat_drp_ack_mcp);
     DAT_PRINT_SYSTEM_VAR(status, dat_drp_ack_bmp);
     DAT_PRINT_SYSTEM_VAR(status, dat_drp_ack_hdc);
     DAT_PRINT_SYSTEM_VAR(status, dat_drp_ack_veml);
