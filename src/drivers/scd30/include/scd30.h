@@ -50,7 +50,7 @@ int scd30_begin(void);
 int scd30_beginMeasuring(uint16_t pressureOffset);
 //int scd30_beginMeasuring(void);
 
-uint16_t scd30_getCO2(void);
+float scd30_getCO2(void);
 float scd30_getHumidity(void);
 float scd30_getTemperature(void);
 
