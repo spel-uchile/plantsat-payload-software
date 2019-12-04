@@ -34,9 +34,9 @@ int main()
         {
             if (scd30_dataAvailable())
             {
-                printf("CO2: %d [ppm]\t", scd30_getCO2());
-                printf("Temperature: %d [°C]\t", scd30_getTemperature());
-                printf("Humidity: %d [%%]\t", scd30_getHumidity());
+                printf("CO2: %f [ppm]\t", scd30_getCO2());
+                printf("Temperature: %f [°C]\t", scd30_getTemperature());
+                printf("Humidity: %f [%%]\t", scd30_getHumidity());
                 printf("-------------------------------------\n");
             }
             else

@@ -77,7 +77,7 @@ void veml6070_setInterrupt(int state, int level) {
 int veml6070_clearAck() {
     printf("clearAck\n");
     uint8_t reg_data[1] = {0};
-    return i2c_read_from(VEML6070_ADDR_ARA, reg_data);
+    return i2c_read_from_n(VEML6070_ADDR_ARA, reg_data, 1);
 }
 
 /**************************************************************************/
@@ -94,11 +94,11 @@ int32_t veml6070_readUV() {
     veml6070_waitForNext();
 
     uint8_t reg_data1[1] = {0};
-    int ec = i2c_read_from(VEML6070_ADDR_H, reg_data1);
+    int ec = i2c_read_from_n(VEML6070_ADDR_H, reg_data1, 1);
     if (ec) return -1;
 
     uint8_t reg_data2[1] = {0};
-    int ec2 = i2c_read_from(VEML6070_ADDR_L, reg_data2);
+    int ec2 = i2c_read_from_n(VEML6070_ADDR_L, reg_data2, 1);
     if (ec2) return -1;
 
     uint16_t uvi = 0;

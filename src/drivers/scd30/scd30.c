@@ -66,14 +66,14 @@ int scd30_begin(void)
 
 //Returns the latest available CO2 level
 //If the current level has already been reported, trigger a new read
-uint16_t scd30_getCO2(void)
+float scd30_getCO2(void)
 {
     if (scd30_co2HasBeenReported == 1) //Trigger a new read
         scd30_readMeasurement(); //Pull in new co2, humidity, and temp into global vars
 
     scd30_co2HasBeenReported = 1;
 
-    return (uint16_t)scd30_co2; //Cut off decimal as co2 is 0 to 10,000
+    return scd30_co2; //Cut off decimal as co2 is 0 to 10,000
 }
 
 //Returns the latest available humidity
@@ -187,7 +187,7 @@ int scd30_readMeasurement()
     i2c_write_n(SCD30_ADDRESS, COMMAND_READ_MEASUREMENT >> 8, reg_tx, 1);
 
     uint8_t reg_rx[18] = {0};
-    i2c_read_n(SCD30_ADDRESS, SCD30_ADDRESS, reg_rx, 18, 0);
+    i2c_read_from_n(SCD30_ADDRESS, reg_rx, 18);
 
     tempCO2 = reg_rx[0];
     tempCO2 <<= 8;
@@ -233,7 +233,7 @@ uint16_t scd30_readRegister(uint16_t registerAddress)
     i2c_write_n(SCD30_ADDRESS, registerAddress >> 8, reg_tx, 1);
 
     uint8_t reg_rx[2] = {0};
-    i2c_read_n(SCD30_ADDRESS, SCD30_ADDRESS, reg_rx, 2, 0);
+    i2c_read_from_n(SCD30_ADDRESS, reg_rx, 2);
 
     return ((uint16_t)reg_rx[0] << 8 | reg_rx[1]);
 }
