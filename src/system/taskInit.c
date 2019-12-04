@@ -22,6 +22,7 @@
 static const char *tag = "taskInit";
 
 static csp_iface_t csp_if_kiss;
+static csp_iface_t *csp_if_zmqhub;
 static csp_kiss_handle_t csp_kiss_driver;
 void my_usart_rx(uint8_t * buf, int len, void * pxTaskWoken) {
     csp_kiss_rx(&csp_if_kiss, buf, len, pxTaskWoken);
@@ -99,24 +100,17 @@ void init_communications(void)
      * Set interfaces and routes
      *  Platform dependent
      */
-    struct usart_conf conf;
-    conf.device = SCH_KISS_DEVICE;
-    conf.baudrate = SCH_KISS_UART_BAUDRATE;
-    usart_init(&conf);
+    /* Set ZMQ interface as a default route*/
+    /* TODO: Add I2C interface */
+    uint8_t addr = (uint8_t)SCH_COMM_ADDRESS;
+    uint8_t *rxfilter = &addr;
+    unsigned  int rxfilter_count = 1;
 
-    csp_kiss_init(&csp_if_kiss, &csp_kiss_driver, usart_putc, usart_insert, "KISS");
-
-    /* Setup callback from USART RX to KISS RS */
-    usart_set_callback(my_usart_rx);
-    csp_route_set(SCH_TNC_ADDRESS, &csp_if_kiss, CSP_NODE_MAC);
-    csp_rtable_set(0, 2, &csp_if_kiss, SCH_TNC_ADDRESS); // Traffic to GND (0-7) via KISS node TNC
-
-    /* Set ZMQ interface */
-    static csp_iface_t csp_if_zmqhub;
-    csp_zmqhub_init_w_endpoints(SCH_COMM_ADDRESS, SCH_COMM_ZMQ_OUT, SCH_COMM_ZMQ_IN);
-    csp_route_set(CSP_DEFAULT_ROUTE, &csp_if_zmqhub, CSP_NODE_MAC);
-    csp_rtable_set(8, 2, &csp_if_zmqhub, SCH_TRX_ADDRESS);
-
+    csp_zmqhub_init_w_name_endpoints_rxfilter(CSP_ZMQHUB_IF_NAME,
+                                              rxfilter, rxfilter_count,
+                                              SCH_COMM_ZMQ_OUT, SCH_COMM_ZMQ_IN,
+                                              &csp_if_zmqhub);
+    csp_route_set(CSP_DEFAULT_ROUTE, csp_if_zmqhub, CSP_NODE_MAC);
 
     /* Start router task with SCH_TASK_CSP_STACK word stack, OS task priority 1 */
     t_ok = csp_route_start_task(SCH_TASK_CSP_STACK, 1);
