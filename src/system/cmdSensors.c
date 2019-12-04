@@ -296,4 +296,6 @@ int scd_get(char *fmt, char *params, int nparams)
     data.hum = scd30_getHumidity();
 
     LOGI(tag, "C02: %.4f, Temp: %.2f°C, Hum: %.2f%%", data.c02, data.temp, data.hum);
+    rc = dat_add_payload_sample(&data, scd_sensors);
+    return rc != -1 ? CMD_OK : CMD_FAIL;
 }
