@@ -29,16 +29,17 @@ void taskSensors(void *param)
     int i;
     cmd_t *cmd_init;
     cmd_t *cmd_get;
+    int nsensors = 5;
     char *init_cmds[] = {"temp_init", "hum_init", "uv_init", "rgb_init", "pres_init"};
     char *get_cmds[] = {"temp_get", "hum_get", "uv_get", "rgb_get", "pres_get"};
 
-    machine = (sample_machine_t) {ST_SAMPLING, ACT_STAND_BY, last_sensor, 5, -1};
+    machine = (sample_machine_t) {ST_PAUSE, ACT_STAND_BY, last_sensor, 5, -1};
     if(osSemaphoreCreate(&sample_machine_sem) != CSP_SEMAPHORE_OK)
     {
         LOGE(tag, "Unable to create system status repository mutex");
     }
 
-    for(i=0; i<5; i++)
+    for(i=0; i<nsensors; i++)
     {
         cmd_init = cmd_get_str(init_cmds[i]);
         cmd_send(cmd_init);
@@ -49,6 +50,7 @@ void taskSensors(void *param)
     while(1)
     {
         osTaskDelayUntil(&xLastWakeTime, 1000); //Suspend task
+        LOGD(tag, "state: %d, action %d, samples left: %d", machine.state, machine.action, machine.samples_left)
         osSemaphoreTake(&sample_machine_sem, portMAX_DELAY);
         // Apply action
         if (machine.action != ACT_STAND_BY) {
@@ -61,6 +63,7 @@ void taskSensors(void *param)
             }
         }
 
+        // States
         if (machine.state == ST_SAMPLING) {
             // Check for samples left
             if (machine.samples_left == 0) {
@@ -69,8 +72,8 @@ void taskSensors(void *param)
             }
             // Check for step
             else if (elapsed_sec % machine.step == 0) {
-                LOGI(tag, "Sample Machine Action: %d", elapsed_sec);
-                for(i=0; i<5; i++) {
+                LOGD(tag, "SAMPLING...");
+                for(i=0; i<nsensors; i++) {
                     cmd_get = cmd_get_str(get_cmds[i]);
                     cmd_send(cmd_get);
                 }
