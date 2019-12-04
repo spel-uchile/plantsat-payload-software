@@ -322,6 +322,16 @@ typedef struct __attribute__((__packed__)) veml_data {
 } veml_data_t;
 
 /**
+ * Struct for storing data collected by scd30 sensor.
+ */
+typedef struct __attribute__((__packed__)) scd_data {
+    uint32_t timestamp;
+    float c02;
+    float temp;
+    float hum;
+} scd_data_t;
+
+/**
  * Struct for storing data collected by apds9250 sensor.
  */
 typedef struct __attribute__((__packed__)) apds_data {

@@ -20,6 +20,7 @@
 #include "veml6070.h"
 #include "apds9250.h"
 #include "bmp3_interface.h"
+#include "scd30.h"
 
 #include "config.h"
 
@@ -126,5 +127,11 @@ int apds_get(char *fmt, char *params, int nparams);
  */
 int bmp_init(char *fmt, char *params, int nparams);
 int bmp_get(char *fmt, char *params, int nparams);
+
+/**
+ * SCD30 C02 Sensor
+ */
+int scd_init(char *fmt, char *params, int nparams);
+int scd_get(char *fmt, char *params, int nparams);
 
 #endif /* _CMD_SENS_H */

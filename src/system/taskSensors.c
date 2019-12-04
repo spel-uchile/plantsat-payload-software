@@ -29,9 +29,9 @@ void taskSensors(void *param)
     int i;
     cmd_t *cmd_init;
     cmd_t *cmd_get;
-    int nsensors = 5;
-    char *init_cmds[] = {"temp_init", "hum_init", "uv_init", "rgb_init", "pres_init"};
-    char *get_cmds[] = {"temp_get", "hum_get", "uv_get", "rgb_get", "pres_get"};
+    int nsensors = 6;
+    char *init_cmds[] = {"temp_init", "hum_init", "uv_init", "rgb_init", "pres_init", "c02_init"};
+    char *get_cmds[] = {"temp_get", "hum_get", "uv_get", "rgb_get", "pres_get", "c02_get"};
 
     machine = (sample_machine_t) {ST_PAUSE, ACT_STAND_BY, last_sensor, 5, -1};
     if(osSemaphoreCreate(&sample_machine_sem) != CSP_SEMAPHORE_OK)

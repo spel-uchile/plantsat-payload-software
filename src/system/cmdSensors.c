@@ -25,7 +25,8 @@ static const char* tag = "cmdSens";
 
 void cmd_sensors_init(void)
 {
-    /* MCP9808 Temperature sensor commands */
+    cmd_add("set_state", set_state, "%u %u %d", 3);
+
     cmd_add("temp_init", mcp_init, "", 0);
     cmd_add("temp_get", mcp_read_temp, "", 0);
 
@@ -41,7 +42,8 @@ void cmd_sensors_init(void)
     cmd_add("pres_init", bmp_init, "", 0);
     cmd_add("pres_get", bmp_get, "", 0);
 
-    cmd_add("set_state", set_state, "%u %u %d", 3);
+    cmd_add("co2_init", scd_init, "", 0);
+    cmd_add("co2_get", scd_get, "", 0);
 }
 
 int set_state(char *fmt, char *params, int nparams)
@@ -267,4 +269,31 @@ int bmp_get(char *fmt, char *params, int nparams)
     }
     else
         return CMD_FAIL;
+}
+
+/**
+ * SCD30 C02 Sensor
+ */
+int scd_init(char *fmt, char *params, int nparams)
+{
+    int rc = scd30_begin();
+    return rc ? CMD_OK : CMD_FAIL;
+}
+
+int scd_get(char *fmt, char *params, int nparams)
+{
+    int rc = scd30_dataAvailable();
+    if(!rc)
+    {
+        LOGW(tag, "SCD no data available!")
+        return CMD_FAIL;
+    }
+
+    scd_data_t data;
+    data.timestamp = (uint32_t)time(NULL);
+    data.c02 = scd30_getCO2();
+    data.temp = scd30_getTemperature();
+    data.hum = scd30_getHumidity();
+
+    LOGI(tag, "C02: %.4f, Temp: %.2f°C, Hum: %.2f%%", data.c02, data.temp, data.hum);
 }
