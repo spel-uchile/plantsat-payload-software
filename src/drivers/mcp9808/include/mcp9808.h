@@ -15,6 +15,7 @@
 #include <stdint.h>
 #include "i2c.h"
 
+#define MCP9808_I2CADDR_DEFAULT 0x1f ///< I2C address
 #define MCP9808_REG_CONFIG 0x01      ///< MCP9808 config register
 
 #define MCP9808_REG_CONFIG_SHUTDOWN 0x0100   ///< shutdown config
