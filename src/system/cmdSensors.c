@@ -53,8 +53,11 @@ int set_state(char *fmt, char *params, int nparams)
     unsigned int step;
     int nsamples;
     if(nparams == sscanf(params, fmt, &action, &step, &nsamples)){
-        return set_machine_state(action, step, nsamples);
+        int rc = set_machine_state(action, step, nsamples);
+        return rc ? CMD_OK : CMD_FAIL;
     }
+
+    return CMD_ERROR;
 }
 
 int mcp_init(char *fmt, char *params, int nparams)
