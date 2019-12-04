@@ -17,6 +17,7 @@ set(SOURCE_FILES
         SUCHAI-Flight-Software/src/system/main.c
         SUCHAI-Flight-Software/src/drivers/rpi/init.c
         SUCHAI-Flight-Software/src/drivers/rpi/data_storage.c
+        SUCHAI-Flight-Software/src/drivers/rpi/linenoise/linenoise.c
         SUCHAI-Flight-Software/src/drivers/rpi/i2c.c
         SUCHAI-Flight-Software/src/os/Linux/osDelay.c
         SUCHAI-Flight-Software/src/os/Linux/osQueue.c
@@ -54,6 +55,7 @@ include_directories(
         SUCHAI-Flight-Software/src/os/include
         SUCHAI-Flight-Software/src/drivers/rpi/include
         SUCHAI-Flight-Software/src/drivers/rpi/libcsp/include
+        SUCHAI-Flight-Software/src/drivers/rpi/linenoise
         /usr/include/postgresql
 )
 
