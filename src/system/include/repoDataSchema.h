@@ -101,6 +101,7 @@ typedef enum dat_system {
     dat_drp_hdc,                  ///< hdc1010 data index
     dat_drp_veml,                 ///< veml6070 data index
     dat_drp_apds,                 ///< apds9250 data index
+    dat_drp_scd,                 ///< apds9250 data index
     dat_drp_lang,                 ///< Langmuir data index
 
     /// Memory: Current send acknowledge data
@@ -112,6 +113,7 @@ typedef enum dat_system {
     dat_drp_ack_hdc,                  ///< hdc1010 data index acknowledge
     dat_drp_ack_veml,                 ///< veml6070 data index acknowledge
     dat_drp_ack_apds,                 ///< apds9250 data index acknowledge
+    dat_drp_ack_scd,                 ///< apds9250 data index acknowledge
     dat_drp_ack_lang,                 ///< Langmuir data index acknowledge
 
     /// Add custom status variables here
@@ -186,6 +188,7 @@ typedef struct __attribute__((packed)) dat_status_s {
     uint32_t dat_drp_hdc;
     uint32_t dat_drp_veml;
     uint32_t dat_drp_apds;
+    uint32_t dat_drp_scd;
     uint32_t dat_drp_lang;          ///< Langmuir data index
 
     /// Memory: Current send acknowledge data
@@ -197,6 +200,7 @@ typedef struct __attribute__((packed)) dat_status_s {
     uint32_t dat_drp_ack_hdc;
     uint32_t dat_drp_ack_veml;
     uint32_t dat_drp_ack_apds;
+    uint32_t dat_drp_ack_scd;
     uint32_t dat_drp_ack_lang;      ///< Langmuir data index acknowledge
 
     /// Add custom status variables here
@@ -231,6 +235,7 @@ typedef enum payload_id {
     hdc_sensors,            ///< hdc1010 sensors
     veml_sensors,           ///< veml6070 sensors
     apds_sensors,           ///< apds sensors
+    scd_sensors,           ///< apds sensors
     lang_sensors,           ///< Langmuir probe sensors
     //custom_sensor,           ///< Add custom sensors here
     last_sensor             ///< Dummy element, the amount of payload variables
@@ -332,6 +337,16 @@ typedef struct __attribute__((__packed__)) apds_data {
     int32_t als;
     int32_t ir;
 } apds_data_t;
+
+/**
+ * Struct for storing data collected by scd30 sensor.
+ */
+typedef struct __attribute__((__packed__)) scd_data {
+    uint32_t timestamp;
+    float c02;
+    float temp;
+    float hum;
+} scd_data_t;
 
 /**
  * Data Map Struct for data schema definition.

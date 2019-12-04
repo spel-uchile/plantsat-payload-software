@@ -10,6 +10,7 @@ set(SOURCE_FILES
         src/drivers/hdc1010/hdc1010.c
         src/drivers/veml6070/veml6070.c
         src/drivers/apds9250/apds9250.c
+        src/drivers/scd30/scd30.c
         src/system/taskInit.c
         src/system/taskSensors.c
         src/system/cmdSensors.c
@@ -50,6 +51,7 @@ include_directories(
         src/drivers/hdc1010/include
         src/drivers/veml6070/include
         src/drivers/apds9250/include
+        src/drivers/scd30/include
         src/system/include
         SUCHAI-Flight-Software/src/system/include
         SUCHAI-Flight-Software/src/os/include

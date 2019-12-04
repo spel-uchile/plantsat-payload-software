@@ -20,6 +20,7 @@
 #include "veml6070.h"
 #include "apds9250.h"
 #include "bmp3_interface.h"
+#include "scd30.h"
 
 #include "config.h"
 
@@ -32,7 +33,28 @@
 
 void cmd_sensors_init(void);
 
+/**
+ * Control sensors state machine task
+ * @param fmt "%u %u %d"
+ * @param params <action> <step> <nsamples>
+ * action: Next action ACT_PAUSE= 0, ACT_START=1, ACT_STAND_BY=2,
+ * step: Seconds between sates update (or samples)
+ * nsamples: Number of samples to take before go to ACT_STAND_BY. Use -1
+ *           to run for ever.
+ * @param nparams 3
+ * @code
+ *
+ * //Start machine, every 2 seconds, 10 samples max.
+ * set_state 1 2 10
+ * //Start machine, every 1 seconds, for ever
+ * set_state 1 1 -1
+ * //Stpo machine [keep 2 seconds, 10 samples]
+ * set_state 2 2 10
+ *
+ * @return
+ */
 int set_state(char *fmt, char *params, int nparams);
+
 /**
  * MCP9808 Temperature Sensor
  */
@@ -105,5 +127,11 @@ int apds_get(char *fmt, char *params, int nparams);
  */
 int bmp_init(char *fmt, char *params, int nparams);
 int bmp_get(char *fmt, char *params, int nparams);
+
+/**
+ * SCD30 C02 Sensor
+ */
+int scd_init(char *fmt, char *params, int nparams);
+int scd_get(char *fmt, char *params, int nparams);
 
 #endif /* _CMD_SENS_H */
