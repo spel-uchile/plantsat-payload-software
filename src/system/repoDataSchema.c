@@ -18,7 +18,7 @@ struct map data_map[last_sensor] = {
         { "hdc_data",      (uint16_t) (sizeof(hdc_data_t)),      dat_drp_hdc,  dat_drp_ack_hdc,  "%u %f %f",                      "timestamp temp hum"},
         { "veml_data",     (uint16_t) (sizeof(veml_data_t)),     dat_drp_veml, dat_drp_ack_veml, "%u %u",                         "timestamp uv"},
         { "apds_data",     (uint16_t) (sizeof(apds_data_t)),     dat_drp_apds, dat_drp_ack_apds, "%u %d %d %d %d %d",             "timestamp red green blue als ir"},
-        { "scd_data",     (uint16_t) (sizeof(scd_data_t)),     dat_drp_scd, dat_drp_ack_scd, "%u %f %f %f",                       "timestamp c02 temp hum"},
+        { "scd_data",     (uint16_t) (sizeof(scd_data_t)),     dat_drp_scd, dat_drp_ack_scd, "%u %f %f %f",                       "timestamp co2 temp hum"},
         { "langmuir_data", (uint16_t) (sizeof(langmuir_data_t)), dat_drp_lang, dat_drp_ack_lang, "%u %f %f %f %d",                "timestamp sweep_voltage plasma_voltage plasma_temperature particles_counter"}
 };
 
