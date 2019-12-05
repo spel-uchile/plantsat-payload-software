@@ -52,8 +52,12 @@ int apds9250_enable() {
  * Get current sensor mode (basically, what's in the green register).
  */
 apds9250_chan_t apds9250_getMode() {
-    uint8_t temp = read8(APDS9250_REG_MAIN_CTRL);
-    apds9250_mode = apds9250_modeFromReg(temp);
+//    uint8_t temp = read8(APDS9250_REG_MAIN_CTRL);
+
+    uint8_t reg_tx[1];
+    uint8_t ec = i2c_read_n(APDS9250_I2C_ADDR, APDS9250_REG_MAIN_CTRL, reg_tx, 1, 0);
+
+    apds9250_mode = apds9250_modeFromReg(reg_tx[0]);
     return apds9250_mode;
 }
 
@@ -123,8 +127,12 @@ apds9250_rate_t apds9250_setMeasRate(apds9250_rate_t newRate) {
  * Get ADC gain
  */
 apds9250_gain_t apds9250_getGain() {
-    uint8_t temp = read8(APDS9250_REG_LS_GAIN);
-    apds9250_gain = apds9250_gainFromReg(temp);
+//    uint8_t temp = read8(APDS9250_REG_LS_GAIN);
+
+    uint8_t reg_tx[1];
+    uint8_t ec = i2c_read_n(APDS9250_I2C_ADDR, APDS9250_REG_LS_GAIN, reg_tx, 1, 0);
+
+    apds9250_gain = apds9250_gainFromReg(reg_tx[0]);
     return apds9250_gain;
 }
 
@@ -199,9 +207,13 @@ uint32_t apds9250_read20(uint8_t reg) {
  * Get LS_MEAS_RATE register values.
  */
 void apds9250_getMeasureRateReg() {
-    uint8_t temp = read8(APDS9250_REG_LS_MEAS_RATE);
-    apds9250_res = apds9250_resFromReg(temp);
-    apds9250_meas_rate = apds9250_measRateFromReg(temp);
+//    uint8_t temp = read8(APDS9250_REG_LS_MEAS_RATE);
+
+    uint8_t reg_tx[1];
+    uint8_t ec = i2c_read_n(APDS9250_I2C_ADDR, APDS9250_REG_LS_MEAS_RATE, reg_tx, 1, 0);
+
+    apds9250_res = apds9250_resFromReg(reg_tx[0]);
+    apds9250_meas_rate = apds9250_measRateFromReg(reg_tx[0]);
 }
 
 /*

@@ -155,7 +155,6 @@ uint32_t apds9250_raw_b;
 uint32_t apds9250_raw_als;
 uint32_t apds9250_raw_ir;
 
-uint8_t apds9250_read8(uint8_t reg);
 uint32_t apds9250_read20(uint8_t reg);
 
 apds9250_chan_t apds9250_modeFromReg(uint8_t reg_value);

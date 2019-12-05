@@ -83,6 +83,7 @@ int mcp_read_temp(char *fmt, char *params, int nparams) {
 #else
     mcp9808_wake();
     data.temp = mcp9808_read_temp_c();
+    usleep(500e3);
     mcp9808_shutdown();
 #endif
 
