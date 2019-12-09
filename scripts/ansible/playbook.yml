@@ -15,6 +15,14 @@
       chdir: /home/pi/plantsat-payload-software
       creates: /home/pi/plantsat-payload-software/SUCHAI-Flight-Software/build_rpi/SUCHAI_Flight_Software
 
+  - name: fix MCP I2C address
+    replace:
+      path: /home/pi/plantsat-payload-software/src/drivers/mcp9808/include/mcp9808.h
+      regexp: 'MCP9808_I2CADDR_DEFAULT 0x1f'
+      replace: 'MCP9808_I2CADDR_DEFAULT {{ mcp_i2c }}'
+    when: mcp_i2c is defined
+
+
   - name: build plantsat payload software
     shell:
       cmd: mkdir -p build; cd build; cmake ..; make
@@ -28,17 +36,23 @@
         remote_src: yes
         mode: u+rwx
 
-  - name: copy suchai-fs service file
-    copy:
-      src: /home/pi/plantsat-payload-software/scripts/suchai-fs.service
-      dest: /home/pi/.local/share/systemd/user/
-      remote_src: yes
+  - name: touch log files
+    file:
+      path: "/home/pi/bin/{{ item }}"
+      state: touch
+      mode: u+rw,g+rw,o+rw
+    loop:
+      - suchai-fs.out
+      - suchai-fs.err
 
-  - name: copy zmq-hub service file
+  - name: copy services file
     copy:
-      src: /home/pi/plantsat-payload-software/scripts/zmq-hub.service
+      src: "/home/pi/plantsat-payload-software/scripts/{{ item }}"
       dest: /home/pi/.local/share/systemd/user/
       remote_src: yes
+    loop:
+      - suchai-fs.service
+      - zmq-hub.service
 
   - name: start suchai-fs service
     systemd:
@@ -46,12 +60,9 @@
       daemon_reload: yes
       enabled: no
       scope: user
-      name: suchai-fs
+      name: "{{ item }}"
+    loop:
+      - suchai-fs
+      - zmq-hub
 
-  - name: start zmq-hub service
-    systemd:
-      state: restarted
-      daemon_reload: yes
-      enabled: no
-      scope: user
-      name: zmq-hub
+

@@ -1,0 +1,6 @@
+[rpi]
+192.168.1.108 mcp_i2c='0x18'
+192.168.1.109
+
+[rpi:vars]
+ansible_user=pi
