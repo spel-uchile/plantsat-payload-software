@@ -1,0 +1,57 @@
+---
+- hosts: rpi
+  remote_user: pi
+
+  tasks:
+  - name: install and update
+    git:
+      repo: https://github.com/spel-uchile/plantsat-payload-software.git
+      dest: /home/pi/plantsat-payload-software
+      force: yes
+
+  - name: config flight software
+    command:
+      cmd: /bin/sh install.sh
+      chdir: /home/pi/plantsat-payload-software
+      creates: /home/pi/plantsat-payload-software/SUCHAI-Flight-Software/build_rpi/SUCHAI_Flight_Software
+
+  - name: build plantsat payload software
+    shell:
+      cmd: mkdir -p build; cd build; cmake ..; make
+      chdir: /home/pi/plantsat-payload-software
+      warn: false
+
+  - name: copy bin
+    copy:
+        src: /home/pi/plantsat-payload-software/build/PlantSat-Payload
+        dest: /home/pi/bin/
+        remote_src: yes
+        mode: u+rwx
+
+  - name: copy suchai-fs service file
+    copy:
+      src: /home/pi/plantsat-payload-software/scripts/suchai-fs.service
+      dest: /home/pi/.local/share/systemd/user/
+      remote_src: yes
+
+  - name: copy zmq-hub service file
+    copy:
+      src: /home/pi/plantsat-payload-software/scripts/zmq-hub.service
+      dest: /home/pi/.local/share/systemd/user/
+      remote_src: yes
+
+  - name: start suchai-fs service
+    systemd:
+      state: restarted
+      daemon_reload: yes
+      enabled: no
+      scope: user
+      name: suchai-fs
+
+  - name: start zmq-hub service
+    systemd:
+      state: restarted
+      daemon_reload: yes
+      enabled: no
+      scope: user
+      name: zmq-hub
