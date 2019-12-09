@@ -33,7 +33,7 @@ void taskSensors(void *param)
     char *init_cmds[] = {"temp_init", "hum_init", "uv_init", "rgb_init", "pres_init", "co2_init"};
     char *get_cmds[] = {"temp_get", "hum_get", "uv_get", "rgb_get", "pres_get", "co2_get"};
 
-    machine = (sample_machine_t) {ST_PAUSE, ACT_STAND_BY, last_sensor, 5, -1};
+    machine = (sample_machine_t) {ST_SAMPLING, ACT_STAND_BY, last_sensor, 5, -1};
     if(osSemaphoreCreate(&sample_machine_sem) != CSP_SEMAPHORE_OK)
     {
         LOGE(tag, "Unable to create system status repository mutex");
