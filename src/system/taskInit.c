@@ -31,7 +31,9 @@ void my_usart_rx(uint8_t * buf, int len, void * pxTaskWoken) {
 void taskInit(void *param)
 {
     /* Initialize subsystem commands */
+#if SCH_SEN_ENABLED
     cmd_sensors_init();
+#endif
 
     /* Initialize system variables */
     LOGD(tag, "Initializing system variables values...")
@@ -54,9 +56,10 @@ void taskInit(void *param)
     /* Creating clients tasks */
     t_ok = osCreateTask(taskConsole, "console", SCH_TASK_CON_STACK, NULL, 2, &(thread_id[0]));
     if(t_ok != 0) LOGE(tag, "Task console not created!");
-
+#if SCH_SEN_ENABLED
     t_ok = osCreateTask(taskSensors, "sensors", SCH_TASK_HKP_STACK, NULL, 2, &(thread_id[1]));
     if(t_ok != 0) LOGE(tag, "Task sensors not created!");
+#endif
 
 #if SCH_HK_ENABLED
     t_ok = osCreateTask(taskHousekeeping, "housekeeping", SCH_TASK_HKP_STACK, NULL, 2, &(thread_id[2]));
